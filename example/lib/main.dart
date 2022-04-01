@@ -27,6 +27,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+final _offsets = <Offset>[];
 class _MyHomePageState extends State<MyHomePage> {
   late int index;
   late double _trimPercent;
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    index = 11;
+    index = 0;
     _trimPercent = 0.2;
     _trimOrigin = PathTrimOrigin.begin;
   }
@@ -89,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: TabBarView(
+        /*body: TabBarView(
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -132,12 +133,77 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ],
-        ),
+        ),*/
+        body: GestureDetector(
+          onPanDown: (details) {
+            final localPosition = context.findRenderObject() as RenderBox;
+           final renderBox = localPosition.globalToLocal(details.globalPosition);
+            setState(() {
+              _offsets.add(renderBox);
+            });
+          },
+            onPanUpdate: (details) {
+              final localPosition = context.findRenderObject() as RenderBox;
+              final renderBox = localPosition.globalToLocal(details.globalPosition);
+              setState(() {
+                _offsets.add(renderBox);
+              });
+            },
+            onPanEnd: (details) {
+              setState(() {
+                _offsets.add(Offset(0.0,0.0));
+              });
+          },
+
+          child: Center(
+            child: CustomPaint(
+              painter: PainterPen(_offsets),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.lightBlue,
+              ),
+            )
+          )
+        )
       ),
     );
   }
 }
+class PainterPen extends CustomPainter{
+  final List<Offset> offsets;
+  PainterPen(this.offsets): super();
+  @override
+  void paint(Canvas canvas, Size size) {
+    // TODO: implement paint
+    final paint = Paint()
+    ..color = Colors.deepPurple
+    ..isAntiAlias = true
+    ..strokeWidth = 3.0;
 
+    for(var index = 0; index<offsets.length; ++index){
+      if(offsets[index]!=null&&offsets[index+1]!=null){
+        canvas.drawLine(offsets[index], offsets[index+1], paint);
+      }
+      else if(offsets[index]!=null&&offsets[index+1]==null) {
+        canvas.drawPoints(
+            PointMode.points,
+            [offsets[index]],
+            paint
+        );
+      }
+
+    }
+
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    throw UnimplementedError();
+  }
+
+}
 const List<String> paths = <String>[
   'M100,200 A3,4,5,1,0,6,7',
   'M100,200 A3,4,5,0,1,6,7',
@@ -182,9 +248,9 @@ class TrimPathPainter extends CustomPainter {
   final PathTrimOrigin origin;
 
   final Path p = Path()
-    ..moveTo(10.0, 10.0)
-    ..lineTo(100.0, 100.0)
-    ..quadraticBezierTo(125.0, 20.0, 200.0, 100.0);
+    ..moveTo(100.0, 100.0)
+    ..quadraticBezierTo(125.0, 20.0, 200.0, 100.0)
+    ..quadraticBezierTo(125.0, 220.0, 100.0, 100.0);
 
   @override
   bool shouldRepaint(TrimPathPainter oldDelegate) =>
@@ -198,9 +264,9 @@ class TrimPathPainter extends CustomPainter {
 
 class DashPathPainter extends CustomPainter {
   final Path p = Path()
-    ..moveTo(10.0, 10.0)
-    ..lineTo(100.0, 100.0)
+    ..moveTo(100.0, 100.0)
     ..quadraticBezierTo(125.0, 20.0, 200.0, 100.0)
+    ..quadraticBezierTo(125.0, 220.0, 100.0, 100.0)
     ..addRect(const Rect.fromLTWH(0.0, 0.0, 50.0, 50.0));
 
   @override
