@@ -41,16 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _trimOrigin = PathTrimOrigin.begin;
   }
 
-  String get currPath => paths[index];
-
-  void nextPath() {
-    setState(() => index = index >= paths.length - 1 ? 0 : index + 1);
-  }
-
-  void prevPath() {
-    setState(() => index = index == 0 ? paths.length - 1 : index - 1);
-  }
-
   void setTrimPercent(double value) {
     setState(() {
       _trimPercent = value;
@@ -78,62 +68,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           bottom: const TabBar(
             tabs: <Tab>[
               const Tab(text: 'Path Trim'),
-              const Tab(text: 'Path Dash'),
-              const Tab(text: 'Path Parse'),
             ],
           ),
         ),
-        /*body: TabBarView(
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                CustomPaint(
-                    painter: TrimPathPainter(_trimPercent, _trimOrigin)),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Slider(
-                        value: _trimPercent,
-                        onChanged: (double value) => setTrimPercent(value),
-                      ),
-
-                      RadioListTile<PathTrimOrigin>(
-                        title: Text(PathTrimOrigin.begin.toString()),
-                        value: PathTrimOrigin.begin,
-                        groupValue: _trimOrigin,
-                        onChanged: toggleTrimOrigin,
-                      ),
-                      RadioListTile<PathTrimOrigin>(
-                        title: Text(PathTrimOrigin.end.toString()),
-                        value: PathTrimOrigin.end,
-                        groupValue: _trimOrigin,
-                        onChanged: toggleTrimOrigin,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            CustomPaint(painter: DashPathPainter()),
-            Stack(
-              children: <Widget>[
-                CustomPaint(painter: PathTestPainter(currPath)),
-                GestureDetector(
-                  onTap: nextPath,
-                ),
-              ],
-            ),
-          ],
-        ),*/
         body: GestureDetector(
           onPanDown: (details) {
             final localPosition = context.findRenderObject() as RenderBox;
@@ -150,8 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
             onPanEnd: (details) {
+              final renderBox = Offset(0.0, 0.0);
               setState(() {
-                _offsets.add(Offset(0.0,0.0));
+                _offsets.add(renderBox);
               });
           },
 
@@ -161,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.lightBlue,
+                color: Colors.lightBlue[50],
               ),
             )
           )
@@ -192,6 +137,11 @@ class PainterPen extends CustomPainter{
             paint
         );
       }
+      else{
+        canvas.drawPoints(PointMode.points,
+            [offsets[0]],
+            paint);
+      }
 
     }
 
@@ -204,38 +154,6 @@ class PainterPen extends CustomPainter{
   }
 
 }
-const List<String> paths = <String>[
-  'M100,200 A3,4,5,1,0,6,7',
-  'M100,200 A3,4,5,0,1,6,7',
-  'M100,200 A3,4,5,1,1,6,7',
-  'M100,200 a3,4,5,0,0,6,7',
-  'M100,200 a3,4,5,0,1,6,7',
-  'M100,200 a3,4,5,1,0,6,7',
-  'M100,200 a3,4,5,1,1,6,7',
-  'M100,200 a3,4,5,006,7',
-  'M100,200 a3,16,6,016,7',
-  'M100,200 a3,4,5,106,7',
-  'M400,400 a3,4,5,116,7',
-  '''M20.0281,100.40466 50.7195,100.40466 80.7195,15.71439 54.11486,15.71439 54.11486,14.36762 50.7195,14.36762
-50.7195,11.68641 54.74134,11.68641 54.74134,10.34618 50.0281,12.34618 	z''',
-  'M100,200 a0,4,5,0,0,10,0 a4,0,5,0,0,0,10 a0,0,5,0,0,-10,0 z',
-  'M.1 .2 L.3 .4 .5 .6',
-  'M1,1h2,3',
-  'M1,1H2,3',
-  'M1,1v2,3',
-  'M1,1V2,3',
-  'M1,1c2,3 4,5 6,7 8,9 10,11 12,13',
-  'M1,1C2,3 4,5 6,7 8,9 10,11 12,13',
-  'M1,1s2,3 4,5 6,7 8,9',
-  'M1,1S2,3 4,5 6,7 8,9',
-  'M1,1q2,3 4,5 6,7 8,9',
-  'M1,1Q2,3 4,5 6,7 8,9',
-  'M1,1t2,3 4,5',
-  'M1,1T2,3 4,5',
-  'M1,1a2,3,4,0,0,5,6 7,8,9,0,0,10,11',
-  'M1,1A2,3,4,0,0,5,6 7,8,9,0,0,10,11',
-];
-
 final Paint black = Paint()
   ..color = Colors.black
   ..strokeWidth = 1.0
