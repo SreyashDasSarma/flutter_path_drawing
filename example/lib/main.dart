@@ -118,20 +118,20 @@ class PainterPen extends CustomPainter{
       ..isAntiAlias = true
       ..strokeWidth = 3.0;
 
-    for(var index = 0; index<offsets.length; ++index){
-      if(offsets[index]!=null&&offsets[index+1]!=null){
-        canvas.drawLine(offsets[index], offsets[index+1], paint);
+    for(var index = 1; index<offsets.length; ++index){
+      if(offsets[index-1]!=null&&offsets[index]!=null){
+        canvas.drawLine(offsets[index-1], offsets[index], paint);
       }
-      else if(offsets[index]!=null&&offsets[index+1]==null) {
+      else if(offsets[index-1]!=null&&offsets[index]==null) {
         canvas.drawPoints(
             PointMode.points,
-            [offsets[index]],
+            [offsets[index-1]],
             paint
         );
       }
       else{
         canvas.drawPoints(PointMode.points,
-            [offsets[0]],
+            [offsets[index-1]],
             paint);
       }
 
