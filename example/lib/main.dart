@@ -29,14 +29,12 @@ class MyHomePage extends StatefulWidget {
 
 final _offsets = <Offset>[];
 class _MyHomePageState extends State<MyHomePage> {
-  late int index;
   late double _trimPercent;
   late PathTrimOrigin _trimOrigin;
 
   @override
   void initState() {
     super.initState();
-    index = 0;
     _trimPercent = 0.2;
     _trimOrigin = PathTrimOrigin.begin;
   }
@@ -44,11 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void setTrimPercent(double value) {
     setState(() {
       _trimPercent = value;
-    });
-  }
-  void setIncVal(double value) {
-    setState(() {
-      index = value.toInt();
     });
   }
 
@@ -81,37 +74,36 @@ class _MyHomePageState extends State<MyHomePage> {
         body: GestureDetector(
           onPanDown: (details) {
             final localPosition = context.findRenderObject() as RenderBox;
-           final renderBox = localPosition.globalToLocal(details.globalPosition);
+            final renderBox = localPosition.globalToLocal(details.globalPosition);
             setState(() {
               _offsets.add(renderBox);
             });
           },
-            onPanUpdate: (details) {
-              final localPosition = context.findRenderObject() as RenderBox;
-              final renderBox = localPosition.globalToLocal(details.globalPosition);
-              setState(() {
-                _offsets.add(renderBox);
-              });
-            },
-            onPanEnd: (details) {
-              final renderBox = Offset(0.0, 0.0);
-              setState(() {
-                _offsets.add(renderBox);
-              });
+          onPanUpdate: (details) {
+            final localPosition = context.findRenderObject() as RenderBox;
+            final renderBox = localPosition.globalToLocal(details.globalPosition);
+            setState(() {
+              _offsets.add(renderBox);
+            });
           },
-
+          onPanEnd: (details) {
+            final renderBox = Offset(0.0, 0.0);
+            setState(() {
+              _offsets.add(renderBox);
+            });
+          },
           child: Center(
-            child: CustomPaint(
-              painter: PainterPen(_offsets),
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.lightBlue[50],
-              ),
-            )
+              child: CustomPaint(
+                painter: PainterPen(_offsets),
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.asset("assets/images/lake.jpg"),
+                ),
+              )
           )
         )
-      ),
+      )
     );
   }
 }
@@ -122,9 +114,9 @@ class PainterPen extends CustomPainter{
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
     final paint = Paint()
-    ..color = Colors.deepPurple
-    ..isAntiAlias = true
-    ..strokeWidth = 3.0;
+      ..color = Colors.deepPurple
+      ..isAntiAlias = true
+      ..strokeWidth = 3.0;
 
     for(var index = 0; index<offsets.length; ++index){
       if(offsets[index]!=null&&offsets[index+1]!=null){
@@ -148,7 +140,7 @@ class PainterPen extends CustomPainter{
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint( CustomPainter oldDelegate) {
     // TODO: implement shouldRepaint
     throw UnimplementedError();
   }
