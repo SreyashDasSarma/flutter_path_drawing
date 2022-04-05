@@ -91,42 +91,8 @@ final Stack stck = Stack();
             onPanEnd: (details) {
             },),
           Opacity(opacity: 1,child: Image.asset('assets/images/field.jpg')),
-          CustomPaint(size: Size(200, 200), painter: PainterPen(_offsets)),
+          CustomPaint(size: Size(0.0, 0.0), painter: PainterPen(_offsets)),
         ],),
-
-        /*body: GestureDetector(
-          onPanDown: (details) {
-            final localPosition = context.findRenderObject() as RenderBox;
-            final renderBox = localPosition.globalToLocal(details.globalPosition);
-            setState(() {
-              _offsets.add(renderBox);
-            });
-          },
-          onPanUpdate: (details) {
-            final localPosition = context.findRenderObject() as RenderBox;
-            final renderBox = localPosition.globalToLocal(details.globalPosition);
-            setState(() {
-              _offsets.add(renderBox);
-            });
-          },
-          onPanEnd: (details) {
-            final renderBox = Offset(400,200);
-            setState(() {
-              _offsets.add(renderBox);
-            });
-          },
-          child: Center(
-              child: CustomPaint(
-                painter: PainterPen(_offsets),
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: new BoxDecoration(
-                    image: new DecorationImage(image: new AssetImage("assets/images/field.jpg"), fit: BoxFit.fitHeight,),
-                  ),
-                ),
-              )
-          )*/
       )
     );
   }
