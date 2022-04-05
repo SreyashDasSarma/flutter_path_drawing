@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
-
+final Stack stck = Stack();
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -71,7 +72,29 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: GestureDetector(
+        body: Stack( children: <Widget>[
+          GestureDetector(
+            onPanDown: (details) {
+              final localPosition = context.findRenderObject() as RenderBox;
+              final renderBox = localPosition.globalToLocal(details.globalPosition);
+              setState(() {
+                _offsets.add(renderBox);
+              });
+            },
+            onPanUpdate: (details) {
+              final localPosition = context.findRenderObject() as RenderBox;
+              final renderBox = localPosition.globalToLocal(details.globalPosition);
+              setState(() {
+                _offsets.add(renderBox);
+              });
+            },
+            onPanEnd: (details) {
+            },),
+          Opacity(opacity: 1,child: Image.asset('assets/images/field.jpg')),
+          CustomPaint(size: Size(200, 200), painter: PainterPen(_offsets)),
+        ],),
+
+        /*body: GestureDetector(
           onPanDown: (details) {
             final localPosition = context.findRenderObject() as RenderBox;
             final renderBox = localPosition.globalToLocal(details.globalPosition);
@@ -87,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
           onPanEnd: (details) {
-            final renderBox = Offset(0.0, 0.0);
+            final renderBox = Offset(400,200);
             setState(() {
               _offsets.add(renderBox);
             });
@@ -98,11 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  child: Image.asset("assets/images/lake.jpg"),
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(image: new AssetImage("assets/images/field.jpg"), fit: BoxFit.fitHeight,),
+                  ),
                 ),
               )
-          )
-        )
+          )*/
       )
     );
   }
@@ -112,9 +136,8 @@ class PainterPen extends CustomPainter{
   PainterPen(this.offsets): super();
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
     final paint = Paint()
-      ..color = Colors.deepPurple
+      ..color = Colors.indigo
       ..isAntiAlias = true
       ..strokeWidth = 3.0;
 
@@ -129,20 +152,13 @@ class PainterPen extends CustomPainter{
             paint
         );
       }
-      else{
-        canvas.drawPoints(PointMode.points,
-            [offsets[index-1]],
-            paint);
-      }
-
     }
 
   }
 
   @override
   bool shouldRepaint( CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    throw UnimplementedError();
+    return true;
   }
 
 }
