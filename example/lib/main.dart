@@ -28,8 +28,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-final _offsets = <Offset>[];
 class _MyHomePageState extends State<MyHomePage> {
+  final _offsets = <Offset>[];
   late double _trimPercent;
   late PathTrimOrigin _trimOrigin;
 
@@ -73,6 +73,7 @@ final Stack stck = Stack();
           ),
         ),
         body: Stack( children: <Widget>[
+          Opacity(opacity: 1,child: Image.asset('assets/images/field.jpg')),
           GestureDetector(
             onPanDown: (details) {
               final localPosition = context.findRenderObject() as RenderBox;
@@ -87,10 +88,7 @@ final Stack stck = Stack();
               setState(() {
                 _offsets.add(renderBox);
               });
-            },
-            onPanEnd: (details) {
             },),
-          Opacity(opacity: 1,child: Image.asset('assets/images/field.jpg')),
           CustomPaint(size: Size(0.0, 0.0), painter: PainterPen(_offsets)),
         ],),
       )
