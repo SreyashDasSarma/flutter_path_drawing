@@ -1,8 +1,6 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:path_drawing/path_drawing.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,34 +28,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _offsets = <Offset>[];
-  late double _trimPercent;
-  late PathTrimOrigin _trimOrigin;
 
   @override
   void initState() {
     super.initState();
-    _trimPercent = 0.2;
-    _trimOrigin = PathTrimOrigin.begin;
   }
 
-  void setTrimPercent(double value) {
-    setState(() {
-      _trimPercent = value;
-    });
-  }
-
-  void toggleTrimOrigin(PathTrimOrigin? value) {
-    setState(() {
-      switch (_trimOrigin) {
-        case PathTrimOrigin.begin:
-          _trimOrigin = PathTrimOrigin.end;
-          break;
-        case PathTrimOrigin.end:
-          _trimOrigin = PathTrimOrigin.begin;
-          break;
-      }
-    });
-  }
 final Stack stck = Stack();
   @override
   Widget build(BuildContext context) {
@@ -107,12 +83,15 @@ class PainterPen extends CustomPainter{
 
     for(var index = 1; index<offsets.length; ++index){
       if(offsets[index-1]!=null&&offsets[index]!=null){
-        canvas.drawLine(offsets[index-1], offsets[index], paint);
+        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-100);
+        Offset b = Offset(offsets[index].dx, offsets[index].dy-100);
+        canvas.drawLine(a, b, paint);
       }
       else if(offsets[index-1]!=null&&offsets[index]==null) {
+        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-100);
         canvas.drawPoints(
             PointMode.points,
-            [offsets[index-1]],
+            [a],
             paint
         );
       }
@@ -130,61 +109,3 @@ final Paint black = Paint()
   ..color = Colors.black
   ..strokeWidth = 1.0
   ..style = PaintingStyle.stroke;
-
-class TrimPathPainter extends CustomPainter {
-  TrimPathPainter(this.percent, this.origin);
-
-  final double percent;
-  final PathTrimOrigin origin;
-
-  final Path p = Path()
-    ..moveTo(100.0, 100.0)
-    ..quadraticBezierTo(125.0, 20.0, 200.0, 100.0)
-    ..quadraticBezierTo(125.0, 220.0, 100.0, 100.0);
-
-  @override
-  bool shouldRepaint(TrimPathPainter oldDelegate) =>
-      oldDelegate.percent != percent;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(trimPath(p, percent, origin: origin), black);
-  }
-}
-
-class DashPathPainter extends CustomPainter {
-  final Path p = Path()
-    ..moveTo(100.0, 100.0)
-    ..quadraticBezierTo(125.0, 20.0, 200.0, 100.0)
-    ..quadraticBezierTo(125.0, 220.0, 100.0, 100.0)
-    ..addRect(const Rect.fromLTWH(0.0, 0.0, 50.0, 50.0));
-
-  @override
-  bool shouldRepaint(DashPathPainter oldDelegate) => true;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(
-        dashPath(
-          p,
-          dashArray: CircularIntervalList<double>(
-            <double>[5.0, 2.5],
-          ),
-        ),
-        black);
-  }
-}
-
-class PathTestPainter extends CustomPainter {
-  PathTestPainter(String path) : p = parseSvgPathData(path);
-
-  final Path p;
-
-  @override
-  bool shouldRepaint(PathTestPainter oldDelegate) => true;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(p, black);
-  }
-}
