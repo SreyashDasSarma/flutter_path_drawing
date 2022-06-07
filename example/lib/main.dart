@@ -58,16 +58,20 @@ final Stack stck = Stack();
             onPanDown: (details) {
               final localPosition = context.findRenderObject() as RenderBox;
               final renderBox = localPosition.globalToLocal(details.globalPosition);
-              setState(() {
-                _offsets.add(renderBox);
-              });
+              if(details.globalPosition.dy<=540&&details.globalPosition.dx<=570&&details.globalPosition.dy>=80&&details.globalPosition.dx>=120) {
+                setState(() {
+                  _offsets.add(renderBox);
+                });
+              }
             },
             onPanUpdate: (details) {
               final localPosition = context.findRenderObject() as RenderBox;
               final renderBox = localPosition.globalToLocal(details.globalPosition);
-              setState(() {
-                _offsets.add(renderBox);
-              });
+              if(details.globalPosition.dy<=540&&details.globalPosition.dx<=570&&details.globalPosition.dy>=80&&details.globalPosition.dx>=120) {
+                setState(() {
+                  _offsets.add(renderBox);
+                });
+              }
             },),
           CustomPaint(size: Size(0.0, 0.0), painter: PainterPen(_offsets)),
         ],),
