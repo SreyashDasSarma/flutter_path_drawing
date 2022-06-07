@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Gesture TeamTrack'),
     );
   }
 }
@@ -42,9 +42,13 @@ final Stack stck = Stack();
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          bottom: const TabBar(
-            tabs: <Tab>[
-              const Tab(text: 'Path Trim'),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            children: [
+              IconButton(icon: Icon(Icons.cloud), onPressed: () {}),
+              Spacer(),
+              IconButton(icon: Icon(Icons.clear), onPressed: () {_offsets.clear();}),
             ],
           ),
         ),
@@ -80,15 +84,15 @@ class PainterPen extends CustomPainter{
       ..color = Colors.indigo
       ..isAntiAlias = true
       ..strokeWidth = 3.0;
-
+    //offsets: -55 for chrome
     for(var index = 1; index<offsets.length; ++index){
       if(offsets[index-1]!=null&&offsets[index]!=null){
-        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-100);
-        Offset b = Offset(offsets[index].dx, offsets[index].dy-100);
+        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-55);
+        Offset b = Offset(offsets[index].dx, offsets[index].dy-55);
         canvas.drawLine(a, b, paint);
       }
       else if(offsets[index-1]!=null&&offsets[index]==null) {
-        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-100);
+        Offset a = Offset(offsets[index-1].dx, offsets[index-1].dy-55);
         canvas.drawPoints(
             PointMode.points,
             [a],
